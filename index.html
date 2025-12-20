@@ -1,0 +1,321 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Happy Birthday Diya, My Love! - A Proposal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Pacifico&family=Space+Mono&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(145deg, #1f001f 0%, #4a001f 100%);
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 1rem;
+    }
+    #main-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 400px;
+      margin-top: 1rem;
+      margin-bottom: 3rem;
+    }
+    #scratch-container {
+      position: relative;
+      cursor: pointer;
+      width: 90vw;
+      max-width: 400px;
+      height: 90vw;
+      max-height: 400px;
+      border-radius: 2rem;
+      box-shadow: 0 10px 40px rgba(255, 105, 180, 0.7);
+      z-index: 10;
+    }
+    #hidden-message {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 1rem;
+      background: radial-gradient(circle at center, #FFECB3 0%, #FFB6C1 150%);
+      color: #444;
+      border-radius: 2rem;
+      z-index: 5;
+      opacity: 0;
+      transition: opacity 0.7s;
+    }
+    #scratch-surface {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: linear-gradient(135deg, #FF66B2 0%, #FFD1DC 100%);
+      border: 5px solid #FFC0CB;
+      box-shadow: 0 0 25px rgba(255, 192, 203, 0.8);
+      border-radius: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 700;
+      z-index: 10;
+      transition: opacity 0.5s ease-out;
+      font-family: 'Pacifico', cursive;
+    }
+    #scratch-surface p:first-child {
+      font-size: 3rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    .typing-text {
+      font-family: 'Space Mono', monospace;
+      overflow: hidden;
+      border-right: .15em solid #FF69B4;
+      white-space: nowrap;
+      margin: 0 auto;
+      letter-spacing: .08em;
+      animation: blink-caret .75s step-end infinite;
+    }
+    @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: #FF69B4; } }
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 20;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    /* 2-Layer 3D Cake Styles */
+    #birthday-cake {
+      position: relative;
+      width: 320px;
+      max-width: 95vw;
+      min-height: 320px;
+      margin: 2rem auto 0 auto;
+      filter: drop-shadow(0 12px 24px rgba(0,0,0,0.5));
+      z-index: 15;
+      text-align: center;
+      opacity: 0; /* Starts hidden, shown via JS */
+      transition: opacity 0.6s;
+    }
+    .cake-stand {
+      width: 240px;
+      height: 30px;
+      background: radial-gradient(ellipse at center, #d1a15f 0%, #b88942 100%);
+      border-radius: 0 0 40px 40px/0 0 60px 60px;
+      box-shadow: 0 10px 40px #b88942;
+      margin: 0 auto;
+      position: relative;
+      top: 180px;
+      z-index: 1;
+    }
+    .cake-layer-bottom {
+      position: absolute;
+      left: 30px;
+      top: 140px;
+      width: 260px;
+      height: 80px;
+      background: linear-gradient(180deg, #fceabb 0%, #f8bbd0 50%, #e57373 100%);
+      border-radius: 0 0 100px 100px / 0 0 80px 80px;
+      box-shadow: 0 18px 30px -8px #b71c1c;
+      z-index: 2;
+      border: 3px solid #fff8e1;
+    }
+    .cake-bottom-cream {
+      position: absolute;
+      left: 30px;
+      top: 122px;
+      width: 260px;
+      height: 40px;
+      z-index: 3;
+    }
+    .cake-layer-top {
+      position: absolute;
+      left: 75px;
+      top: 60px;
+      width: 170px;
+      height: 70px;
+      background: linear-gradient(180deg, #fff0e5 0%, #ffd1dc 70%, #f48fb1 100%);
+      border-radius: 0 0 60px 60px / 0 0 60px 60px;
+      box-shadow: 0 12px 24px -6px #c2185b;
+      z-index: 4;
+      border: 3px solid #fff8e1;
+    }
+    .cake-top-cream {
+      position: absolute;
+      left: 75px;
+      top: 40px;
+      width: 170px;
+      height: 40px;
+      z-index: 5;
+    }
+    .cake-candle {
+      position: absolute;
+      left: 154px;
+      top: 2px;
+      width: 14px;
+      height: 50px;
+      background: linear-gradient(90deg, #ffe066 70%, #fff59d 100%);
+      border-radius: 7px;
+      box-shadow: 2px 0 8px #ffecb3;
+      z-index: 6;
+      transition: opacity 0.3s;
+    }
+    .cake-flame {
+      position: absolute;
+      left: 158px;
+      top: -14px;
+      width: 10px;
+      height: 22px;
+      background: radial-gradient(ellipse at center, #fffde7 0%, #ffd54f 70%, #ff9800 100%);
+      border-radius: 60% 60% 60% 60%;
+      box-shadow: 0 0 18px 8px #ffd54f;
+      animation: flicker .3s infinite alternate;
+      z-index: 7;
+      transition: opacity 0.3s;
+    }
+    @keyframes flicker {
+      0% { transform: scaleY(1); background: #ffd54f; }
+      100% { transform: scaleY(1.18); background: #ff9800; }
+    }
+    .cake-message {
+      color: #fff8e1;
+      font-family: 'Pacifico', cursive;
+      font-size: 1.3rem;
+      text-shadow: 1px 1px 8px #c2185b;
+      margin-top: 2.5rem;
+      margin-bottom: 0;
+      text-align: center;
+    }
+
+    /* Proposal & Result Styles */
+    #proposal-section, #result-section {
+      display: none; /* Initially hidden */
+      width: 95vw;
+      max-width: 400px;
+      margin: 2rem auto 0 auto;
+      padding: 2rem;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 1.5rem;
+      text-align: center;
+      color: #ffe082;
+      font-family: 'Pacifico', cursive;
+      transition: opacity 0.7s;
+      opacity: 0;
+    }
+    #proposal-section h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      color: #fff8e1;
+      text-shadow: 1px 1px 8px #4a001f;
+    }
+    .proposal-buttons button {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      padding: 0.75rem 2rem;
+      margin: 0 1rem;
+      border-radius: 9999px;
+      transition: transform 0.2s, background-color 0.2s;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+    #yes-button {
+      background-color: #34D399; /* Emerald Green */
+      color: #10B981;
+    }
+    #no-button {
+      background-color: #F87171; /* Red */
+      color: #EF4444;
+    }
+    #yes-button:hover, #no-button:hover {
+      transform: scale(1.05);
+    }
+
+    /* Result styles */
+    #ring-image {
+      max-width: 150px;
+      margin: 2rem auto;
+      filter: drop-shadow(0 0 20px #FFD700);
+      animation: sparkle 1s infinite alternate;
+    }
+    @keyframes sparkle {
+      from { transform: scale(1); opacity: 1; }
+      to { transform: scale(1.05); opacity: 0.9; }
+    }
+    #result-message {
+      font-size: 1.6rem;
+      font-family: 'Pacifico', cursive;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confetti-canvas"></canvas>
+
+  <button id="audio-start-button" class="mt-8 px-8 py-4 bg-yellow-500 text-black font-bold text-lg rounded-full shadow-xl hover:bg-yellow-600 transition-colors z-20 transform hover:scale-105">
+    Tap Here to Start the Magic!
+  </button>
+  <div id="main-content">
+    <div id="scratch-container" class="mt-8">
+      <div id="hidden-message">
+        <span class="text-6xl mb-2 text-yellow-500">✨</span>
+        <p class="text-3xl font-extrabold tracking-wider font-pacifico" id="revealed-title"></p>
+        <p class="mt-2 text-2xl font-light italic font-inter text-gray-700" id="revealed-message" style="margin-top: 1rem;"></p>
+      </div>
+      <div id="scratch-surface">
+        <p class="font-bold tracking-widest z-20">Scratch to Reveal Love!</p>
+        <p class="text-gray-200 text-base mt-2 z-20">(Use your finger)</p>
+      </div>
+    </div>
+
+    <div id="birthday-cake" style="display:none;">
+      <div style="position:relative; width:320px; height:220px; margin:auto;">
+        <div class="cake-stand"></div>
+        <div class="cake-layer-bottom"></div>
+        <svg class="cake-bottom-cream" viewBox="0 0 260 40">
+          <path d="M0,25 Q30,0 60,20 Q90,40 130,20 Q170,0 200,20 Q230,35 260,25 L260,40 L0,40 Z" fill="#fffde7" opacity="0.93"/>
+        </svg>
+        <div class="cake-layer-top"></div>
+        <svg class="cake-top-cream" viewBox="0 0 170 40">
+          <path d="M0,25 Q20,0 40,20 Q70,40 85,20 Q110,0 140,20 Q160,35 170,25 L170,40 L0,40 Z" fill="#fffde7" opacity="0.96"/>
+        </svg>
+        <div class="cake-candle" id="cake-candle"></div>
+        <div class="cake-flame" id="cake-flame"></div>
+      </div>
+      <p class="cake-message">
+        Happy Birthday Diya my love!<br>
+        Touch the cake to blow the candle, then touch again for your next surprise...
+      </p>
+    </div>
+
+    <div id="proposal-section">
+      <h2>Will you be my life partner?</h2>
+      <div class="proposal-buttons flex justify-center">
+        <button id="yes-button" onclick="handleProposal('yes')">YES! ❤️</button>
+        <button id="no-button" onclick="handleProposal('no')">NO 😢</button>
+      </div>
+    </div>
+
+    <div id="result-section">
+      <img id="ring-image" style="display:none;" src="https://i.imgur.com/kS5YvPj.png" alt="Diamond Ring">
+      <p id="result-message"></p>
+    </div>
+  </div>
+  <script>
+    // Scratch logic and other elements
